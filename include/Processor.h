@@ -84,7 +84,7 @@ public:
             Loads r <-- ($FF00+X).*/
             void Load(Register* r, Register* X);
 
-            void Load(Register* X, Register* Y, uint16_t nn);
+			/*Loads into register r the contents of memory specified by the register pair XY.*/
             void Load(Register* r, Register* X, Register* Y);
 
             /*Loads into register r the contents of memory specified by the contents of
@@ -145,7 +145,7 @@ public:
         /*Immediate Data*/
 
             // Load two bytes of immediate data to register pair xy.
-			void Load(uint8_t n, uint8_t m, Register* X, Register* Y);
+			void Load(Register* X, Register* Y, uint16_t nn);;
 
         /*From Stack Pointer*/
 
