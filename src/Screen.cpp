@@ -10,7 +10,7 @@ void CompileShader(int shader)
 
     GLint check;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &check);
-    if (check != GLEW_OK)
+    if (check == GL_FALSE)
     {
         GLint elength;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH , &elength);
@@ -34,17 +34,12 @@ Screen::Screen(int width, int height)
     int vs = glCreateShader(GL_VERTEX_SHADER);
     int fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-    char *ss = const_cast<char*>(vertexSource.c_str());
-    char *ssa[1] = {ss};
-    GLint size = vertexSource.length();
-    glShaderSource(vs, 0, ssa, &size);
-
-    ss = const_cast<char*>(fragmentSource.c_str());
-    ssa[0] = ss;
-    size = fragmentSource.length();
-    glShaderSource(fs, 0, ssa, &size);
-
+    const char *str = vertexSource.c_str();
+    glShaderSource(vs, 1, &str, nullptr);
     CompileShader(vs);
+
+    str = fragmentSource.c_str();
+    glShaderSource(fs, 1, &str, nullptr);
     CompileShader(fs);
 
     glAttachShader(this->program, vs);
@@ -57,10 +52,10 @@ Screen::Screen(int width, int height)
 
     GLint linked;
     glGetProgramiv(this->program, GL_LINK_STATUS, &linked);
-    if (linked != GLEW_OK)
+    if (linked == GL_FALSE)
     {
         GLint elength;
-        glGetProgramiv(this->program, GL_INFO_LOG_LENGTH , &elength);
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH , &elength);
 
         GLsizei esize;
         GLchar* compiler_log = (GLchar*)malloc(elength);

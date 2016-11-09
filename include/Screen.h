@@ -19,28 +19,30 @@ class Screen
         void SetPixels(int offset, uint8_t value);
     private:
         std::string vertexSource =
-        ((std::string)"#version 330\n") +
-        "in vec3 data\n" +
-        "out uint color\n" +
+        ((std::string)"#version 300 es\n") +
+        "in vec3 data;\n" +
+        "flat out int color;\n" +
         "void main() {\n" +
-        "   color = data[2];\n" +
+        "   color = int(data[2]);\n" +
         "   gl_Position = vec4(data[0], data[1], 0.0, 1.0);\n" +
         "}\n";
 
         std::string fragmentSource =
-        ((std::string)"#version 330\n") +
-        "in uint color\n" +
-        "out vec4 colorOut\n" +
+        ((std::string)"#version 300 es\n") +
+        "precision highp float;" +
+        "flat in int color;\n" +
+        "out vec4 colorOut;\n" +
         "void main() {\n" +
-        "   switch (color) {\n" +
+        "   int nc = color;\n" +
+        "   switch (nc) {\n" +
         "       case 1:\n" +
-        "           color = 96; break;\n" +
+        "           nc = 96; break;\n" +
         "       case 2:\n" +
-        "           color = 192; break;\n" +
+        "           nc = 192; break;\n" +
         "       case 3:\n" +
-        "           color = 256; break;\n" +
+        "           nc = 256; break;\n" +
         "   }\n" +
-        "   colorOut = vec4(color, color, color, 1.0);\n" +
+        "   colorOut = vec4(nc, nc, nc, 1.0);\n" +
         "}\n";
 };
 
