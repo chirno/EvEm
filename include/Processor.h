@@ -29,10 +29,10 @@ public:
     unsigned int mTotal, tTotal;
 
     uint16_t _halt, _stop, _ime;
-private:
-    std::unordered_map<uint8_t, std::function<void(Processor* p, unsigned int* m, unsigned int* t)>>* operations;
-
     Memory* memory;
+private:
+    std::unordered_map<uint8_t, std::function<void(Processor* p)>>* operations;
+
     GPU* gpu;
 public:
     Processor(GPU* gpu, Memory* memory);
@@ -317,13 +317,6 @@ public:
     void DI();
 
     void EI();
-
-
-
-
-
-
-
 
     //Compare(Register* A, Register* B);
     //Push(Register* SP);
