@@ -11,20 +11,20 @@
 class Processor
 {
 public:
-    Register* A = new Register(1);
-    Register* B = new Register(1);
-    Register* C = new Register(1);
-    Register* D = new Register(1);
-    Register* E = new Register(1);
-    Register* H = new Register(1);
-    Register* L = new Register(1);
-    Register* F = new Register(1);
-    Register* PC = new Register(2);
-    Register* SP = new Register(2);
+    Register* A;
+    Register* B;
+    Register* C;
+    Register* D;
+    Register* E;
+    Register* H;
+    Register* L;
+    Register* F;
+    Register* PC;
+    Register* SP;
 
     //Clock registers
-    Register* M = new Register(1);
-    Register* T = new Register(1);
+    Register* M;
+    Register* T;
 
     unsigned int mTotal, tTotal;
 
@@ -44,6 +44,9 @@ public:
     inline uint8_t FetchInstruction()
     {
         uint16_t pc = (((uint16_t)PC->GetByte(1)) << 8) & PC->GetByte(0);
+        this->PC->SetByte(1, (pc+1) << 8);
+        this->PC->SetByte(0, pc+1);
+        pc--;
         if (pc == 0x1000)
         {
             memory->SetBIOS(false);
