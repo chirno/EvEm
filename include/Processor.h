@@ -31,11 +31,11 @@ public:
     bool cbInstruction = false;
 
     uint16_t _halt, _stop, _ime;
+    Memory* memory;
 private:
     std::unordered_map<uint8_t, std::function<void(Processor* p)>>* operations;
     std::unordered_map<uint8_t, std::function<void(Processor* p)>>* cboperations;
 
-    Memory* memory;
     GPU* gpu;
 public:
     Processor(GPU* gpu, Memory* memory);
@@ -323,13 +323,6 @@ public:
     void DI();
 
     void EI();
-
-
-
-
-
-
-
 
     //Compare(Register* A, Register* B);
     //Push(Register* SP);
