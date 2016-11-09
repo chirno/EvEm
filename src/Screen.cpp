@@ -12,12 +12,18 @@ void CompileShader(int shader)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &check);
     if (check == GL_FALSE)
     {
-        GLint elength;
+        GLint elength = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH , &elength);
-
-        GLsizei esize;
         GLchar* compiler_log = (GLchar*)malloc(elength);
-        glGetShaderInfoLog(shader, elength, &esize, compiler_log);
+        glGetShaderInfoLog(shader, elength, &elength, compiler_log);
+
+		GLint selength;
+		glGetShaderiv(shader, GL_SHADER_SOURCE_LENGTH, &selength);
+
+		GLsizei sesize;
+		GLchar* source = (GLchar*)malloc(elength);
+		glGetShaderSource(shader, selength, &sesize, source);
+		std::string source2 = std::string("tat\n") + source;
         std::string error = std::string("Shader failed to compile with error:\n") + compiler_log;
         throw -1;
     }

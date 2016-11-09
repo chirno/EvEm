@@ -75,7 +75,7 @@ void Processor::Load(Register* r, Register* X) {
 /*Loads into register r the contents of memory specified by the contents of
 register pair xy %*/
 void Processor::Load(Register* r, Register* X, Register* Y){
-    uint16_t temp = X->GetByte(0) >> 8;
+	uint16_t temp = X->GetByte(0) << 8;
     temp = Y->GetByte(0);
     r->SetByte(0, this->memory->GetByte(temp));
     this->M->SetByte(0, 0x02);
@@ -85,7 +85,7 @@ void Processor::Load(Register* r, Register* X, Register* Y){
 /*Loads into register r the contents of memory specified by the contents of
 register pair xy, simultaneously incrememnt the contents of HL.%*/
 void Processor::Load_Increment(Register* r, Register* X, Register* Y) {
-    uint16_t temp = X->GetByte(0) >> 8;
+    uint16_t temp = X->GetByte(0) << 8;
     temp = Y->GetByte(0);
     r->SetByte(0, this->memory->GetByte(temp));
     temp++;
@@ -98,7 +98,7 @@ void Processor::Load_Increment(Register* r, Register* X, Register* Y) {
 /*Loads into register r the contents of memory specified by the contents of
 register pair XY, then decrementing the pair XY.%*/
 void Processor::Load_Decrement(Register* r, Register* X, Register* Y) {
-    uint16_t temp = X->GetByte(0) >> 8;
+    uint16_t temp = X->GetByte(0) << 8;
     temp = Y->GetByte(0);
     r->SetByte(0, this->memory->GetByte(temp));
     temp--;
@@ -268,7 +268,7 @@ void Processor::Push(Register* SP, Register* X, Register* Y){
     this->memory->SetByte(temp, X->GetByte(0));
     temp--;
     this->memory->SetByte(temp, Y->GetByte(0));
-    SP->SetByte(1, (uint8_t)temp >> 8);
+    SP->SetByte(1, (uint8_t)temp << 8);
     SP->SetByte(0, (uint8_t)temp && 0x00FF);
     this->M->SetByte(0, 0x03);
     this->T->SetByte(0, 0x12);
@@ -286,7 +286,7 @@ void Processor::Pop(Register* SP, Register* X, Register* Y) {
     temp++;
     Y->SetByte(0, this->memory->GetByte(SP->GetByte(0)));
     temp++;
-    SP->SetByte(1, (uint8_t)temp >> 8);
+    SP->SetByte(1, (uint8_t)temp << 8);
     SP->SetByte(0, (uint8_t)temp && 0x00FF);
     this->M->SetByte(0, 0x03);
     this->T->SetByte(0, 0x12);
@@ -356,7 +356,7 @@ void Processor::ADDSIGNED(Register* SP, int8_t n){
     temp += n;
     if(temp > 255)
         this->F->SetHex(1, 0x1);
-    SP->SetByte(1, (uint8_t)temp >> 8);
+    SP->SetByte(1, (uint8_t)temp << 8);
     SP->SetByte(0, (uint8_t)temp && 0x00FF);
     this->M->SetByte(0, 0x04);
     this->T->SetByte(0, 0x16);
