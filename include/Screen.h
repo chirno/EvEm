@@ -9,7 +9,7 @@ class Screen
     private:
         int width, height;
         uint8_t* pixels;
-        unsigned int buffer, program;
+        unsigned int buffer = 0, program;
     public:
         Screen(int width, int height);
         virtual ~Screen();

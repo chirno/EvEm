@@ -4,6 +4,25 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+void CompileShader(int shader)
+{
+    glCompileShader(shader);
+
+    GLint check;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &check);
+    if (check != GLEW_OK)
+    {
+        GLint elength;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH , &elength);
+
+        GLsizei esize;
+        GLchar* compiler_log = (GLchar*)malloc(elength);
+        glGetShaderInfoLog(shader, elength, &esize, compiler_log);
+        std::string error = std::string("Shader failed to compile with error:\n") + compiler_log;
+        throw -1;
+    }
+}
+
 Screen::Screen(int width, int height)
 {
     this->width = width;
@@ -17,7 +36,7 @@ Screen::Screen(int width, int height)
 
     char *ss = const_cast<char*>(vertexSource.c_str());
     char *ssa[1] = {ss};
-    int size = vertexSource.length();
+    GLint size = vertexSource.length();
     glShaderSource(vs, 0, ssa, &size);
 
     ss = const_cast<char*>(fragmentSource.c_str());
@@ -25,30 +44,30 @@ Screen::Screen(int width, int height)
     size = fragmentSource.length();
     glShaderSource(fs, 0, ssa, &size);
 
-    glCompileShader(vs);
-    glCompileShader(fs);
-
-    GLint check;
-    glGetShaderiv(vs, GL_COMPILE_STATUS, &check);
-    if (!check)
-       throw "Vertex shader failed to compile.";
-
-    glGetShaderiv(fs, GL_COMPILE_STATUS, &check);
-    if (!check)
-       throw "Fragment shader failed to compile.";
+    CompileShader(vs);
+    CompileShader(fs);
 
     glAttachShader(this->program, vs);
     glAttachShader(this->program, fs);
     glLinkProgram(this->program);
 
-    glCreateBuffers(1, &this->buffer);
+    glGenBuffers(1, &this->buffer);
     glBindBuffer(GL_ARRAY_BUFFER, this->buffer);
     glBufferData(GL_ARRAY_BUFFER, 160 * 144 * 6 * 3, nullptr, GL_STATIC_DRAW);
 
     GLint linked;
     glGetProgramiv(this->program, GL_LINK_STATUS, &linked);
-    if (!linked)
-       throw "Program failed to link.";
+    if (linked != GLEW_OK)
+    {
+        GLint elength;
+        glGetProgramiv(this->program, GL_INFO_LOG_LENGTH , &elength);
+
+        GLsizei esize;
+        GLchar* compiler_log = (GLchar*)malloc(elength);
+        glGetProgramInfoLog(this->program, elength, &esize, compiler_log);
+        std::string error = std::string("Shader failed to compile with error:\n") + compiler_log;
+        throw -1;
+    }
 }
 
 Screen::~Screen()

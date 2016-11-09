@@ -27,6 +27,8 @@ public:
     Register* T = new Register(1);
 
     unsigned int mTotal, tTotal;
+
+    uint16_t _halt, _stop, _ime;
 private:
     std::unordered_map<uint8_t, std::function<void(Processor* p, unsigned int* m, unsigned int* t)>>* operations;
 
@@ -192,7 +194,7 @@ public:
         void ADD(Register* X, Register* Y, Register* Z, Register* W);
         void ADD(Register* X, Register* Y, Register* ZW);
         void ADD(Register* X, uint8_t n);
-        void ADD(Register* SP, int8_t n);
+        void ADDSIGNED(Register* SP, int8_t n);
         void ADDHL(Register* X, Register* H, Register* L);
 
         void ADC(Register* X, Register* H, Register* L);
@@ -209,19 +211,19 @@ public:
 
         void AND(Register* X);
         void AND(uint8_t n);
-        void AND();
+        void AND(Register* H, Register* L);
 
         void OR(Register* X);
         void OR(uint8_t n);
-        void OR();
+        void OR(Register* H, Register* L);
 
         void XOR(Register* X);
         void XOR(uint8_t n);
-        void XOR();
+        void XOR(Register* H, Register* L);
 
-        void CP(Register* X);
-        void CP(uint8_t n);
-        void CP();
+        void CP(Register* X, Register* Y);
+        void CP(Register* X,uint8_t n);
+        void CP(Register* X, Register* H, Register* L);
 
         void INC(Register* X);
         void INC(Register* X, Register* Y);
@@ -248,24 +250,24 @@ public:
     void RLCA();
 
     void RLC(Register* X);
-    void RLC();
+    void RLCHL();
 
     void RLA();
 
     void RL(Register* X);
-    void RL();
+    void RLHL();
 
     //------------------------------------------------
 
     void RRCA();
 
     void RRC(Register* X);
-    void RRC();
+    void RRCHL();
 
     void RRA();
 
     void RR(Register* X);
-    void RR();
+    void RRHL();
 
     //--------------------------------------------------
 

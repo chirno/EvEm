@@ -28,6 +28,14 @@ bool Application::Init()
         return false;
     }
 
+    glfwMakeContextCurrent(window);
+    if (glewInit() != GLEW_OK)
+    {
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return false;
+    }
+
     g = new GPU();
     m = new Memory(g);
     p = new Processor(g, m);
@@ -68,7 +76,9 @@ int main(void)
 {
     Application app("Test", 800, 600);
 
-    app.Init();
+    if (!app.Init())
+        return -1;
+
     app.Loop();
 
     return 0;
