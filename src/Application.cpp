@@ -47,6 +47,16 @@ void Application::Loop()
 {
     while (p->IsRunning() || !glfwWindowShouldClose(window))
     {
+
+		/*What??*/
+		p->memory->SetWord(0, 0xFF24);
+		p->SP->SetWord(0,p->memory->GetWord(0));
+		p->A->SetByte(0, 0xFF);
+		p->B->SetByte(0, 0x02);
+		p->Push(p->SP, p->A, p->B);
+		p->Pop(p->SP, p->C, p->D);
+		p->ADD(p->C, p->D);
+
         Frame();
         this->g->Render();
         glClear(GL_COLOR_BUFFER_BIT);
@@ -78,6 +88,8 @@ int main(void)
 
     if (!app.Init())
         return -1;
+
+	
 
     app.Loop();
 

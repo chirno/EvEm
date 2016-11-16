@@ -43,7 +43,7 @@ void Processor::ProcessOpcode(uint8_t code)
 
 void Processor::InitOpcodes()
 {
-    operations = new std::unordered_map<uint8_t, std::function<void(Processor* p)>>();
+  /*  operations = new std::unordered_map<uint8_t, std::function<void(Processor* p)>>();
     (*operations)[0x00] = [](Processor* p) {
         p->NOP();
     };
@@ -266,11 +266,12 @@ void Processor::InitOpcodes()
     (*operations)[0x80] = [](Processor* p) {
         p->ADD(p->A, p->B);
     };
+	*/
 	(*operations)[0xF0] = [](Processor* p) {
 		//LDH A,(n)
 	};
 	(*operations)[0xF1] = [](Processor* p) {
-		//POP AF
+		//p->Pop(p->SP, p->A, p->F);
 	};
 	(*operations)[0xF2] = [](Processor* p) {
 		//RST XX
