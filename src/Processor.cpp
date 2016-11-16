@@ -807,7 +807,7 @@ void Processor::RRHL(){
 
 void Processor::SLA(Register* X){
     uint16_t co = X->GetByte(0)&0x80 ? 0x10 : 0;
-    X->SetByte(0, (X->GetByte(0)<<1)&255)
+    X->SetByte(0, (X->GetByte(0)<<1)&255);
     this->FlagHelper((uint16_t)X->GetByte(0), 0);
     this->F->SetByte(0, (this->F->GetByte(0)&0xEF)+co);
     this->M->SetByte(0, 0x02);
@@ -829,7 +829,7 @@ void Processor::SLA(){
 void Processor::SRA(Register* X){
     uint16_t ci = X->GetByte(0)&0x80;
     uint16_t co = X->GetByte(0)&1 ? 0x10 : 0;
-    X->SetByte(0, ((X->GetByte(0)>>1)+ci)&255)
+    X->SetByte(0, ((X->GetByte(0)>>1)+ci)&255);
     this->FlagHelper((uint16_t)X->GetByte(0), 0);
     this->F->SetByte(0, (this->F->GetByte(0)&0xEF)+co);
     this->M->SetByte(0, 0x02);
@@ -870,24 +870,24 @@ void Processor::SRL(){
     this->T->SetByte(0, 0x16);
 }
 
-void Processor::BIT(Bit b, Register* X){
+void Processor::BIT(uint8_t b, Register* X){
     this->FlagHelper(X->GetByte(0)&b, 0);
     this->M->SetByte(0, 0x02);
     this->T->SetByte(0, 0x08);
 }
-void Processor::BIT(Bit b){
+void Processor::BIT(uint8_t b){
     uint16_t HL = this->H->GetByte(0) << 8;
     HL += this->L->GetByte(0);
     this->FlagHelper(this->memory->GetByte(HL)&b, 0);
     this->M->SetByte(0, 0x03);
     this->T->SetByte(0, 0x12);
 }
-void Processor::SET(Bit b, Register* X){
+void Processor::SET(uint8_t b, Register* X){
     X->SetByte(0, X->GetByte(0)|b);
     this->M->SetByte(0, 0x02);
     this->M->SetByte(0, 0x08);
 }
-void Processor::SET(Bit b){
+void Processor::SET(uint8_t b){
     uint16_t HL = this->H->GetByte(0) << 8;
     HL += this->L->GetByte(0);
     uint8_t HLbyte = this->memory->GetByte(HL);
@@ -907,7 +907,7 @@ void Processor::RES(uint8_t b){
     HL += this->L->GetByte(0);
     uint8_t value = this->memory->GetByte(HL);
     value &= 0xFF - (1 << b);
-    this-memory->SetByte(0, value);
+    this->memory->SetByte(HL, value);
     this->M->SetByte(0, 0x04);
     this->M->SetByte(0, 0x16);
 }
@@ -944,15 +944,15 @@ void Processor::SWAP(){
     uint16_t HL = this->H->GetByte(0) << 8;
     HL += this->L->GetByte(0);
     uint8_t HLmem = this->memory->GetByte(HL);
-    this-memory->SetByte(HL, (((HLmem&0xF)<<4)|((HLmem&0xF0)>>4)));
+    this->memory->SetByte(HL, (((HLmem&0xF)<<4)|((HLmem&0xF0)>>4)));
     this->F->SetByte(0, this->memory->GetByte(HL)?0:0x80);
     this->M->SetByte(0, 0x02);
     this->M->SetByte(0, 0x08);
 }
 
 void Processor::CCF(){
-    uint16_t ci = this->F->GetByte(0)&0x10 ? 0 : 0x10;
-    this->F->SetByte(0, this->F->GetByte(0)&0xEF)+ci;
+    uint8_t ci = this->F->GetByte(0)&0x10 ? 0 : 0x10;
+    this->F->SetByte(0, (this->F->GetByte(0)&0xEF)+ci);
     this->M->SetByte(0, 0x01);
     this->M->SetByte(0, 0x04);
 }

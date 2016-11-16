@@ -283,22 +283,22 @@ public:
     void SRL(Register* X);
     void SRL();
 
-    /*
-    /   Bit manipulation
-    */
 
-    //void BIT(Bit b, Register* X);
-    //void BIT(Bit b);
+    //   Bit manipulation
 
-    //void SET(Bit b, Register* X);
-    //void SET(Bit b);
 
-    //void RES(Bit b, Register* X);
-    //void RES(Bit b);
+    void BIT(uint8_t b, Register* X);
+    void BIT(uint8_t b);
 
-    /*
-    /   General purpose Arithmetic and CPU control
-    */
+    void SET(uint8_t b, Register* X);
+    void SET(uint8_t b);
+
+    void RES(uint8_t b, Register* X);
+    void RES(uint8_t b);
+
+
+    //   General purpose Arithmetic and CPU control
+
 
     void DAA();
 
