@@ -111,3 +111,4 @@ uint16_t Register::GetWord(int index)
     int realIndex = index * 2;
     return ((uint16_t)storage[realIndex + 1] << 8) | storage[realIndex];
 }
+
