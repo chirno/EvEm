@@ -15,7 +15,6 @@ int Register::GetSize()
 {
     return size;
 }
-
 bool Register::Increment()
 {
     for (int i = 0; i < size; i++)
@@ -109,3 +108,4 @@ uint16_t Register::GetWord(int index)
 {
     return ((uint16_t)storage[index + 1] << 8) | storage[index];
 }
+

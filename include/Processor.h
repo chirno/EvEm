@@ -22,6 +22,27 @@ public:
     Register* PC;
     Register* SP;
 
+	Register* Trash8 = new Register(1);
+	Register* Trash8_2 = new Register(1);
+	Register* Trash16 = new Register(2);
+	Register* Trash16_2 = new Register(2);
+
+	//Flags
+	
+	/*Is set if the result of a math operation is 0 or two values match when
+	using CP.*/
+	bool ZeroFlag = false;
+	/*This bit is set if a subtraction was performed in the
+	last math instruction.*/
+	bool SubtractionFlag = false;
+	/*This bit is set if a carry occurred from the lower
+	nibble in the last math operation.*/
+	bool HalfCarryFlag = false;
+	/*This bit is set if a carry occurred from the last
+	math operation or if register A is the smaller value
+	when executing the CP instruction.*/
+	bool CarryFlag = false;
+	
     //Clock registers
     Register* M;
     Register* T;
@@ -90,8 +111,11 @@ public:
             // Loads into 16 bit register r the values in register pair XY, simultaneously decrement the contents of register pair XY.
             void Load_Decrement(Register* r, Register* X, Register* Y);
 
+<<<<<<< HEAD
     // From Immediate
 
+=======
+>>>>>>> Rewrote the Load and Store functions in the Processor and fixed some typos.
     /*To Memory*/
 
         /*From Register*/
@@ -125,7 +149,7 @@ public:
         //Immediate Data
 
             // Load two bytes of immediate data to register pair xy.
-			void Load16(uint8_t n, uint8_t m, Register* X, Register* Y);
+			void Load(Register* X, Register* Y, uint16_t nn);
 
         //From Stack Pointer
 
@@ -170,125 +194,154 @@ public:
         /   8-bit
         */
 
+		void FlagSetter(bool zeroFlag, bool subtractionFlag, bool halfCarryFlag, bool carryFlag);
+		bool carry(bool cIn, bool X, bool Y);
+		bool borrow(bool cIn, bool X, bool Y);
+		uint8_t WordToByte(bool index, uint16_t n);
+		uint16_t ByteToWord(uint8_t n);
+		uint16_t RegisterPairContents(Register* X, Register* Y);
+		void ToRegisterPair(Register* X, Register* Y, uint16_t n);
+
+		/*---------------------------------*/
+		uint8_t ADDHelper(bool cin, uint8_t firstByte, uint8_t secondByte);
+		uint16_t ADDHelper16(bool cin, uint16_t firstWord, uint16_t secondWord);
+		uint8_t SUBHelper(bool cin, uint8_t firstByte, uint8_t secondByte);
+		uint16_t SUBHelper16(bool cin, uint16_t firstWord, uint16_t secondWord);
+		uint8_t ANDHelper(uint8_t firstByte, uint8_t secondByte);
+		uint8_t ORHelper(uint8_t firstByte, uint8_t secondByte);
+		uint8_t XORHelper(uint8_t firstByte, uint8_t secondByte);
+		void CPHelper(uint8_t firstByte, uint8_t secondByte);
+		bool JumpConditions(uint8_t cc);
+
+		/*-----------------------------------*/
+		uint8_t FromMemory(Register* X, Register* Y);
+		void ToMemory(Register* X, Register* Y, uint8_t n);
+
+		/*-----------------------------------*/
+		/*Pass in Registers X and Y and add their contents together into X.*/
         void ADD(Register* X, Register* Y);
-        void ADD(Register* X, Register* Y, Register* Z, Register* W);
-        void ADD(Register* X, Register* Y, Register* ZW);
-        void ADD(Register* X, uint8_t n);
-        void ADDSIGNED(Register* SP, int8_t n);
-        void ADDHL(Register* X, Register* H, Register* L);
+		void ADD(Register* X, uint8_t n);
+		void ADD(Register* X, Register* H, Register* L);
 
-        void ADC(Register* X, Register* H, Register* L);
-        void ADC(Register* X, Register* Y);
-        void ADC(Register* X, uint8_t n);
+		void ADC(Register* X, Register* Y);
+		void ADC(Register* X, uint8_t n);
+		void ADC(Register* X, Register* H, Register* L);
 
-        void SUB(Register* X, Register* Y);
-        void SUB(Register* X, uint8_t n);
-        void SUB(Register* A, Register* H, Register* L);
+		void SUB(Register* X, Register* Y);
+		void SUB(Register* X, uint8_t n);
+		void SUB(Register* X, Register* H, Register* L);
 
-        void SBC(Register* X, Register* H, Register* L);
-        void SBC(Register* X, Register* Y);
-        void SBC(Register* X, uint8_t n);
+		void SBC(Register* X, Register* Y);
+		void SBC(Register* X, uint8_t n);
+		void SBC(Register* X, Register* H, Register* L);
+		
+		void AND(Register* X, Register* Y);
+		void AND(Register* X, uint8_t n);
+		void AND(Register* X, Register* H, Register* L);
 
-        void AND(Register* X);
-        void AND(uint8_t n);
-        void AND(Register* H, Register* L);
+		void OR(Register* X, Register* Y);
+		void OR(Register* X, uint8_t n);
+		void OR(Register* X, Register* H, Register* L);
 
-        void OR(Register* X);
-        void OR(uint8_t n);
-        void OR(Register* H, Register* L);
+		void XOR(Register* X, Register* Y);
+		void XOR(Register* X, uint8_t n);
+		void XOR(Register* X, Register* H, Register* L);
 
-        void XOR(Register* X);
-        void XOR(uint8_t n);
-        void XOR(Register* H, Register* L);
+		void CP(Register* X, Register* Y);
+		void CP(Register* X, uint8_t n);
+		void CP(Register* X, Register* H, Register* L);
 
-        void CP(Register* X, Register* Y);
-        void CP(Register* X,uint8_t n);
-        void CP(Register* X, Register* H, Register* L);
+		void INC(Register* X);
+		void INC(Register* X, Register* Y);
 
-        void INC(Register* X);
-        void INC(Register* X, Register* Y);
-        void INCHL(Register* H, Register* L);
+		void DEC(Register* X);
+		void DEC(Register* X, Register* Y);
 
-        void DEC(Register* X);
-        void DEC(Register* X, Register* Y);
-        void DECHL(Register* H, Register* L);
+		//16-bit
 
-        /*
-        /   16-bit
-        */
+		void ADDPairs(Register* X, Register* Y, Register* Z, Register* W);
+		void ADDSP(Register* SP, uint8_t n);
+		void INCPair(Register* X, Register* Y);
+		void DECPair(Register* X, Register* Y);
 
-        //void ADD(Register* X, Register* Y);
+		//-------------------------------------------------------
+		//Rotate Shift Instructions
 
-        //void INC(Register* X, Register* Y);
+		void RLCA();
+		void RLA();
+		void RRCA();
+		void RRA();
 
-        //void DEC(Register* X, Register* Y);
+		void RLC(Register* X);
+		void RLC(Register* H, Register* L);
 
-    /*
-    /   Rotate and Shift Operations
-    */
+		void RL(Register* X);
+		void RL(Register* H, Register* L);
 
-    void RLCA();
+		void RRC(Register* X);
+		void RRC(Register* H, Register* L);
 
-    void RLC(Register* X);
-    void RLCHL();
+		void RR(Register* X);
+		void RR(Register* H, Register* L);
 
-    void RLA();
+		void SLA(Register* X);
+		void SLA(Register* H, Register* L);
 
-    void RL(Register* X);
-    void RLHL();
+		void SRA(Register* X);
+		void SRA(Register* H, Register* L);
 
-    //------------------------------------------------
+		void SRL(Register* X);
+		void SRL(Register* H, Register* L);
 
-    void RRCA();
+		void SWAP(Register* X);
+		void SWAP(Register* H, Register* L);
 
-    void RRC(Register* X);
-    void RRCHL();
+		void JP(uint16_t nn);
+		bool JP(uint8_t cc, uint16_t nn);
 
-    void RRA();
+		void JR(int8_t n);
+		bool JR(uint8_t cc, int8_t n);
 
-    void RR(Register* X);
-    void RRHL();
+		void JP(Register* H, Register* L);
+		
 
-    //--------------------------------------------------
-
-    void SLA(Register* X);
-    void SLA();
-
-    void SRA(Register* X);
-    void SRA();
-
-    void SRL(Register* X);
-    void SRL();
+		
 
 
     //   Bit manipulation
 
 
-    void BIT(uint8_t b, Register* X);
-    void BIT(uint8_t b);
+    void BIT(uint8_t n, Register* X);
+    void BIT(uint8_t n, Register* H, Register* L);
 
-    void SET(uint8_t b, Register* X);
-    void SET(uint8_t b);
+    void SET(uint8_t n, Register* X);
+	void SET(uint8_t n, Register* H, Register* L);
 
-    void RES(uint8_t b, Register* X);
-    void RES(uint8_t b);
+    void RES(uint8_t n, Register* X);
+    void RES(uint8_t n, Register* H, Register* L);
 
 
     //   General purpose Arithmetic and CPU control
 
+	void CALL(uint16_t nn);
+	void CALL(uint8_t cc, uint16_t nn);
 
-    void DAA();
+	//Pop two bytes from stack and jump to that address.
+	void RET();
 
-    void CPL();
+//	void RETI();
+//	void RET();
+//	void RST(uint8_t t);
 
-    void SWAP(Register* X);
-    void SWAP();
+	/////////////////////////////////////////////////////////
+
+	void DAA();
+	void CPL();
+
 
     void CCF();
 
     void SCF();
-
-    void JR(int8_t value);
 
     void NOP();
 
@@ -305,9 +358,7 @@ public:
     //Pop(Register* SP);
     //ClearCarryFlag(Register* F);
     void Reset();
-
-    //Helper Functions
-    void FlagHelper(uint16_t n, int as);
+		
 };
 
 #endif	/* PROCESSOR_H */

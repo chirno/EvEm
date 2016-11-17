@@ -49,6 +49,7 @@ void Application::Loop()
 {
     while (p->IsRunning() || !glfwWindowShouldClose(window))
     {
+
         Frame();
         glClear(GL_COLOR_BUFFER_BIT);
         this->g->Render();
@@ -80,6 +81,8 @@ int main(void)
 
     if (!app.Init())
         return -1;
+
+	
 
     app.Loop();
 
