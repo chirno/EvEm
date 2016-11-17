@@ -30,7 +30,8 @@ public:
 
     uint16_t _halt, _stop, _ime;
 private:
-    std::unordered_map<uint8_t, std::function<void(Processor* p, unsigned int* m, unsigned int* t)>>* operations;
+    std::unordered_map<uint8_t, std::function<void(Processor* p)>>* operations;
+    std::unordered_map<uint8_t, std::function<void(Processor* p)>>* cboperations;
 
     Memory* memory;
     GPU* gpu;
