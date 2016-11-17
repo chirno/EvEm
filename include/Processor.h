@@ -11,26 +11,29 @@
 class Processor
 {
 public:
-    Register* A = new Register(1);
-    Register* B = new Register(1);
-    Register* C = new Register(1);
-    Register* D = new Register(1);
-    Register* E = new Register(1);
-    Register* H = new Register(1);
-    Register* L = new Register(1);
-    Register* F = new Register(1);
-    Register* PC = new Register(2);
-    Register* SP = new Register(2);
+    Register* A;
+    Register* B;
+    Register* C;
+    Register* D;
+    Register* E;
+    Register* H;
+    Register* L;
+    Register* F;
+    Register* PC;
+    Register* SP;
 
     //Clock registers
-    Register* M = new Register(1);
-    Register* T = new Register(1);
+    Register* M;
+    Register* T;
 
     unsigned int mTotal, tTotal;
 
+    bool cbInstruction = false;
+
     uint16_t _halt, _stop, _ime;
 private:
-    std::unordered_map<uint8_t, std::function<void(Processor* p, unsigned int* m, unsigned int* t)>>* operations;
+    std::unordered_map<uint8_t, std::function<void(Processor* p)>>* operations;
+    std::unordered_map<uint8_t, std::function<void(Processor* p)>>* cboperations;
 
     Memory* memory;
     GPU* gpu;
@@ -44,6 +47,9 @@ public:
     inline uint8_t FetchInstruction()
     {
         uint16_t pc = (((uint16_t)PC->GetByte(1)) << 8) & PC->GetByte(0);
+        this->PC->SetByte(1, (pc+1) << 8);
+        this->PC->SetByte(0, pc+1);
+        pc--;
         if (pc == 0x1000)
         {
             memory->SetBIOS(false);
@@ -280,22 +286,22 @@ public:
     void SRL(Register* X);
     void SRL();
 
-    /*
-    /   Bit manipulation
-    */
 
-    //void BIT(Bit b, Register* X);
-    //void BIT(Bit b);
+    //   Bit manipulation
 
-    //void SET(Bit b, Register* X);
-    //void SET(Bit b);
 
-    //void RES(Bit b, Register* X);
-    //void RES(Bit b);
+    void BIT(uint8_t b, Register* X);
+    void BIT(uint8_t b);
 
-    /*
-    /   General purpose Arithmetic and CPU control
-    */
+    void SET(uint8_t b, Register* X);
+    void SET(uint8_t b);
+
+    void RES(uint8_t b, Register* X);
+    void RES(uint8_t b);
+
+
+    //   General purpose Arithmetic and CPU control
+
 
     void DAA();
 
